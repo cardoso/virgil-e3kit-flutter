@@ -39,6 +39,7 @@ struct FlutterEThree {
         case "hasLocalPrivateKey": hasLocalPrivateKey(result)
         case "register": register(result)
         case "rotatePrivateKey": rotatePrivateKey(result)
+        case "cleanUp": cleanUp(result)
         case "findUsers": findUsers(
             try getArgument("identities"),
             result
@@ -49,6 +50,7 @@ struct FlutterEThree {
             result)
         case "decrypt": decrypt(
             text: try getArgument("text"),
+            from: getOptionalArgument("user"),
             result)
         default:
             result(FlutterError(
@@ -67,22 +69,14 @@ struct FlutterEThree {
         do {
             result(try instance.hasLocalPrivateKey())
         } catch let error {
-            return result(FlutterError(
-                code: "has_local_private_key_failed",
-                message: "Failed to check local private key",
-                details: error.localizedDescription
-            ))
+            return result(error.toFlutterError())
         }
     }
 
     func register(_ result: @escaping FlutterResult) {
         instance.register(completion: { error in
             if let error = error {
-                return result(FlutterError(
-                    code: "register_failed",
-                    message: "Failed to register user",
-                    details: error.localizedDescription
-                ))
+                return result(error.toFlutterError())
             }
 
             return result(true)
@@ -92,15 +86,20 @@ struct FlutterEThree {
     func rotatePrivateKey(_ result: @escaping FlutterResult) {
         instance.rotatePrivateKey(completion: { error in
             if let error = error {
-                return result(FlutterError(
-                    code: "rotate_private_key_failed",
-                    message: "Failed to rotate private key",
-                    details: error.localizedDescription
-                ))
+                return result(error.toFlutterError())
             }
 
             return result(true)
         })
+    }
+
+    func cleanUp(_ result: @escaping FlutterResult) {
+        do {
+            try instance.cleanUp()
+            return result(true)
+        } catch let error {
+            return result(error.toFlutterError())
+        }
     }
 
     func findUsers(_ identities: [String], _ result: @escaping FlutterResult) {
@@ -137,27 +136,39 @@ struct FlutterEThree {
         })
     }
 
-    func encrypt(text: String, for users: FindUsersResult? = nil, _ result: @escaping FlutterResult) {
+    func encrypt(
+        text: String,
+        for users: [String: String]? = nil,
+        _ result: @escaping FlutterResult
+    ) {
         do {
+            let users = try users?.mapValues {
+                try instance.cardManager.importCard(fromBase64Encoded: $0)
+            }
+
             result(try instance.encrypt(text: text, for: users))
         } catch let error {
-            return result(FlutterError(
-                code: "encrypt_failed",
-                message: "Failed to encrypt",
-                details: error.localizedDescription
-            ))
+            return result(error.toFlutterError())
         }
     }
 
-    func decrypt(text: String, _ result: @escaping FlutterResult) {
+    func decrypt(
+        text: String,
+        from user: String?,
+        _ result: @escaping FlutterResult
+    ) {
         do {
-            result(try instance.decrypt(text: text))
+            if let user = user {
+                let card = try instance
+                    .cardManager
+                    .importCard(fromBase64Encoded: user)
+
+                return result(try instance.decrypt(text: text, from: card))
+            }
+
+            return result(try instance.decrypt(text: text))
         } catch let error {
-            return result(FlutterError(
-                code: "decrypt_failed",
-                message: "Failed to decrypt",
-                details: error.localizedDescription
-            ))
+            return result(error.toFlutterError())
         }
     }
 }

@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'dart:convert';
 
-import 'package:flutter/services.dart';
-import 'package:e3kit/e3kit.dart';
-
-import 'package:http/http.dart' as http;
+import 'log.dart';
+import 'device.dart';
 
 void main() => runApp(MyApp());
 
@@ -15,7 +11,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  String _logs = '';
+  final alice = Device('Alice');
+  final bob = Device('Bob');
+  
+  Map<String, String> aliceFind;
+  Map<String, String> bobFind;
 
   @override
   void initState() {
@@ -23,40 +24,52 @@ class _MyAppState extends State<MyApp> {
     initPlatformState();
   }
 
+  initializeUsers() async {
+    await alice.initialize();
+    await bob.initialize();
+  }
+
+  registerUsers() async {
+    await alice.register();
+    await bob.register();
+  }
+
+  findUsers() async {
+    bobFind = await alice.findUsers([bob.identity]);
+    aliceFind = await bob.findUsers([alice.identity]);
+  }
+
+  encryptAndDecrypt() async {
+      final aliceEncryptedText = await alice.encrypt('Hello ${bob.identity}! How are you?', bobFind);
+      await bob.decrypt(aliceEncryptedText, aliceFind[alice.identity]);
+
+      final bobEncryptedText = await bob.encrypt('Hello ${alice.identity}! How are you?', aliceFind);
+      await alice.decrypt(bobEncryptedText, bobFind[bob.identity]);
+  }
+
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    String platformVersion;
+    log = (e) {
+      if (!mounted) return;
+      setState(() { _logs = _logs + '\n' + e; });
+    };
+
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      final identity = 'Alice';
+      log('* Testing main methods:');
+      log('\n----- EThree.initialize -----');
+      await initializeUsers();
+      log('\n----- EThree.register -----');
+      await registerUsers();
+      log('\n----- EThree.lookupPublicKeys -----');
+      await findUsers();
+      log('\n----- EThree.encrypt & EThree.decrypt -----');
+      await encryptAndDecrypt();
+    } catch(err) {
+      log('Unexpected error: $err');
+    }
 
-      final authCallback = () async {
-        final response = (await http.post(
-          'http://localhost:3000/authenticate',
-          headers: {'Content-Type': 'application/json'},
-          body: json.encode({'identity': identity})
-        )).body;
-
-        return json.decode(response)['authToken'];
-      };
-
-      final tokenCallback = () async { 
-        final authToken = await authCallback();
-
-        final response =  (await http.get(
-          'http://localhost:3000/virgil-jwt',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $authToken'}
-        )).body;
-
-        return json.decode(response)['virgilToken'];
-      };
-
-      EThree eThree = await EThree.init(identity, tokenCallback);
-      platformVersion = await eThree.identity;
-
-      if (await eThree.hasLocalPrivateKey() == false) {
+      /*if (await eThree.hasLocalPrivateKey() == false) {
         try {
           await eThree.register();
         } on Exception {
@@ -71,16 +84,7 @@ class _MyAppState extends State<MyApp> {
       platformVersion = encrypted + ' ' + decrypted + ' ' + users.toString();
     } on PlatformException catch(e) {
       platformVersion = 'Failed to get platform version. $e';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+    }*/
   }
 
   @override
@@ -88,10 +92,12 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('E3Kit Flutter Sample'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: SingleChildScrollView(
+            child: Text('Running on: $_logs\n'),
+          ),
         ),
       ),
     );

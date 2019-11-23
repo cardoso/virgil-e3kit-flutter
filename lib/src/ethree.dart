@@ -34,6 +34,10 @@ class EThree {
     return _invokeMethod('register', {});
   }
 
+  Future<void> cleanUp() {
+    return _invokeMethod('cleanUp', {});
+  }
+
   Future<void> rotatePrivateKey() {
     return _invokeMethod('rotatePrivateKey', {});
   }
@@ -43,12 +47,12 @@ class EThree {
     return _invokeMethod('findUsers', args).then((res) => Map<String, String>.from(res));
   }
 
-  Future<String> encrypt(String text) {
-    return _invokeMethod('encrypt', {'text': text});
+  Future<String> encrypt(String text, [Map<String, String> users]) {
+    return _invokeMethod('encrypt', {'text': text, 'users': users});
   }
 
-  Future<String> decrypt(String text) {
-    return _invokeMethod('decrypt', {'text': text});
+  Future<String> decrypt(String text, [String user]) {
+    return _invokeMethod('decrypt', {'text': text, 'user': user});
   }
 
   Future<T> _invokeMethod<T>(String method, [dynamic arguments]) {
