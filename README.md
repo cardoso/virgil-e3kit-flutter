@@ -92,7 +92,6 @@ final users = await eThree.findUsers(with: [bobUID]);
     
 // Decrypt text and verify if it was really written by Bob
 final originText = await eThree.decrypt(encryptedText, users[bobUID]);
-}
 ```
 
 #### Multidevice support
