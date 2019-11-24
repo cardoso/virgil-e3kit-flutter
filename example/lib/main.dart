@@ -52,6 +52,12 @@ class _MyAppState extends State<MyApp> {
     await bob.backupPrivateKey('${bob.identity}_pkeypassword');
   }
 
+  changePasswords() async {
+    await alice.changePassword('${alice.identity}_pkeypassword',
+    '${alice.identity}_pkeypassword_new');
+    await bob.changePassword('${bob.identity}_pkeypassword', '${bob.identity}_pkeypassword_new');
+  }
+
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     log = (e) {
@@ -77,7 +83,7 @@ class _MyAppState extends State<MyApp> {
       log('\n----- EThree.backupPrivateKey -----');
       await backupPrivateKeys();
       log('\n----- EThree.changePassword -----');
-      //await changePasswords();
+      await changePasswords();
       log('\n----- EThree.restorePrivateKey -----');
       //await restorePrivateKeys();
       log('\n----- EThree.resetPrivateKeyBackup -----');

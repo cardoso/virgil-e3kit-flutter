@@ -142,6 +142,24 @@ class Device {
       _log('Backed up private key');
     } on PlatformException catch(err) {
       _log('Failed backing up private key: $err');
+      if (err.code == 'entry_already_exists') {
+        await eThree.resetPrivateKeyBackup();
+        _log('Reset private key backup. Trying again...');
+        await this.backupPrivateKey(password);
+      }
+    }
+  }
+
+  changePassword(String oldPassword, String newPassword) async {
+    final eThree = getEThree();
+
+    try {
+      //# start of snippet: e3kit_start_of_snippet
+      await eThree.changePassword(oldPassword, newPassword);
+      //# end of snippet: e3kit_end_of_snippet
+      _log('Changed password');
+    } on PlatformException catch(err) {
+      _log('Failed changing password: $err');
     }
   }
 }

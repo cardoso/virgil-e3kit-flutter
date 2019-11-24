@@ -63,6 +63,10 @@ class EThree {
     return _invokeMethod('resetPrivateKeyBackup', {});
   }
 
+  Future<void> changePassword(String oldPassword, String newPassword) {
+    return _invokeMethod('changePassword', {'oldPassword': oldPassword, 'newPassword': newPassword});
+  }
+
   Future<T> _invokeMethod<T>(String method, [dynamic arguments]) {
     final args = (arguments ?? {});
     args['_id'] = _id;

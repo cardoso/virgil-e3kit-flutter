@@ -59,6 +59,11 @@ struct FlutterEThree {
             result
         )
         case "resetPrivateKeyBackup": resetPrivateKeyBackup(result)
+        case "changePassword": changePassword(
+            from: try getArgument("oldPassword"),
+            to: try getArgument("newPassword"),
+            result
+        )
         default:
             result(FlutterError(
                 code: "method_not_recognized",
@@ -195,6 +200,21 @@ struct FlutterEThree {
 
     func resetPrivateKeyBackup(_ result: @escaping FlutterResult) {
         instance.resetPrivateKeyBackup().start { res in
+            switch res {
+            case .success:
+                return result(true)
+            case .failure(let error):
+                return result(error.toFlutterError())
+            }
+        }
+    }
+
+    func changePassword(
+        from oldPassword: String,
+        to newPassword: String,
+        _ result: @escaping FlutterResult
+    ) {
+        instance.changePassword(from: oldPassword, to: newPassword).start { res in
             switch res {
             case .success:
                 return result(true)
