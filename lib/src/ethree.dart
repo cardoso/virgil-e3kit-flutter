@@ -55,6 +55,14 @@ class EThree {
     return _invokeMethod('decrypt', {'text': text, 'user': user});
   }
 
+  Future<void> backupPrivateKey(String password) {
+    return _invokeMethod('backupPrivateKey', {'password': password});
+  }
+
+  Future<void> resetPrivateKeyBackup() {
+    return _invokeMethod('resetPrivateKeyBackup', {});
+  }
+
   Future<T> _invokeMethod<T>(String method, [dynamic arguments]) {
     final args = (arguments ?? {});
     args['_id'] = _id;

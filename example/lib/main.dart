@@ -40,11 +40,16 @@ class _MyAppState extends State<MyApp> {
   }
 
   encryptAndDecrypt() async {
-      final aliceEncryptedText = await alice.encrypt('Hello ${bob.identity}! How are you?', bobFind);
-      await bob.decrypt(aliceEncryptedText, aliceFind[alice.identity]);
+    final aliceEncryptedText = await alice.encrypt('Hello ${bob.identity}! How are you?', bobFind);
+    await bob.decrypt(aliceEncryptedText, aliceFind[alice.identity]);
 
-      final bobEncryptedText = await bob.encrypt('Hello ${alice.identity}! How are you?', aliceFind);
-      await alice.decrypt(bobEncryptedText, bobFind[bob.identity]);
+    final bobEncryptedText = await bob.encrypt('Hello ${alice.identity}! How are you?', aliceFind);
+    await alice.decrypt(bobEncryptedText, bobFind[bob.identity]);
+  }
+
+  backupPrivateKeys() async {
+    await alice.backupPrivateKey('${alice.identity}_pkeypassword');
+    await bob.backupPrivateKey('${bob.identity}_pkeypassword');
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -57,14 +62,26 @@ class _MyAppState extends State<MyApp> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       log('* Testing main methods:');
+
       log('\n----- EThree.initialize -----');
       await initializeUsers();
       log('\n----- EThree.register -----');
       await registerUsers();
-      log('\n----- EThree.lookupPublicKeys -----');
+      log('\n----- EThree.findUsers -----');
       await findUsers();
       log('\n----- EThree.encrypt & EThree.decrypt -----');
       await encryptAndDecrypt();
+
+      log('\n* Testing private key backup methods:');
+
+      log('\n----- EThree.backupPrivateKey -----');
+      await backupPrivateKeys();
+      log('\n----- EThree.changePassword -----');
+      //await changePasswords();
+      log('\n----- EThree.restorePrivateKey -----');
+      //await restorePrivateKeys();
+      log('\n----- EThree.resetPrivateKeyBackup -----');
+      //await resetPrivateKeyBackups();
     } catch(err) {
       log('Unexpected error: $err');
     }

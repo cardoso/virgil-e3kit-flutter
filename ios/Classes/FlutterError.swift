@@ -7,6 +7,7 @@
 
 import Flutter
 import VirgilE3Kit
+import VirgilSDK
 
 extension FlutterError: Error {
 
@@ -15,6 +16,10 @@ extension FlutterError: Error {
 extension Error {
     func toFlutterError() -> FlutterError {
         if let error = self as? EThreeError {
+            return error.toFlutterError()
+        }
+
+        if let error = self as? CloudKeyStorageError {
             return error.toFlutterError()
         }
 
@@ -92,6 +97,37 @@ extension EThreeError {
         case .wrongPassword:
             return FlutterError(
                 code: "wrong_password",
+                message: localizedDescription,
+                details: nil
+            )
+        }
+    }
+}
+
+extension CloudKeyStorageError {
+    func toFlutterError() -> FlutterError {
+        switch self {
+        case .cloudStorageOutOfSync:
+            return FlutterError(
+                code: "cloud_storage_out_of_sync",
+                message: localizedDescription,
+                details: nil
+            )
+        case .entryAlreadyExists:
+            return FlutterError(
+                code: "entry_already_exists",
+                message: localizedDescription,
+                details: nil
+            )
+        case .entryNotFound:
+            return FlutterError(
+                code: "entry_not_found",
+                message: localizedDescription,
+                details: nil
+            )
+        case .entrySavingError:
+            return FlutterError(
+                code: "entry_saving_error",
                 message: localizedDescription,
                 details: nil
             )

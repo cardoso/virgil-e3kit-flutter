@@ -47,11 +47,18 @@ struct FlutterEThree {
         case "encrypt": encrypt(
             text: try getArgument("text"),
             for: getOptionalArgument("users"),
-            result)
+            result
+        )
         case "decrypt": decrypt(
             text: try getArgument("text"),
             from: getOptionalArgument("user"),
-            result)
+            result
+        )
+        case "backupPrivateKey": backupPrivateKey(
+            password: try getArgument("password"),
+            result
+        )
+        case "resetPrivateKeyBackup": resetPrivateKeyBackup(result)
         default:
             result(FlutterError(
                 code: "method_not_recognized",
@@ -169,6 +176,31 @@ struct FlutterEThree {
             return result(try instance.decrypt(text: text))
         } catch let error {
             return result(error.toFlutterError())
+        }
+    }
+
+    func backupPrivateKey(
+        password: String,
+        _ result: @escaping FlutterResult
+    ) {
+        instance.backupPrivateKey(password: password).start { res in
+            switch res {
+            case .success:
+                return result(true)
+            case .failure(let error):
+                return result(error.toFlutterError())
+            }
+        }
+    }
+
+    func resetPrivateKeyBackup(_ result: @escaping FlutterResult) {
+        instance.resetPrivateKeyBackup().start { res in
+            switch res {
+            case .success:
+                return result(true)
+            case .failure(let error):
+                return result(error.toFlutterError())
+            }
         }
     }
 }

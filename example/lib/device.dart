@@ -34,7 +34,7 @@ class Device {
     final tokenCallback = () async { 
       final authToken = await authCallback();
 
-      final response =  (await http.get(
+      final response = (await http.get(
         'http://localhost:3000/virgil-jwt',
         headers: {
           'Content-Type': 'application/json',
@@ -130,5 +130,18 @@ class Device {
     }
 
     return decryptedText;
+  }
+
+  backupPrivateKey(String password) async {
+    final eThree = getEThree();
+
+    try {
+      //# start of snippet: e3kit_backup_private_key
+      await eThree.backupPrivateKey(password);
+      //# end of snippet: e3kit_backup_private_key
+      _log('Backed up private key');
+    } on PlatformException catch(err) {
+      _log('Failed backing up private key: $err');
+    }
   }
 }
