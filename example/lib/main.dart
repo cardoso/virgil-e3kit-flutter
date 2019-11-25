@@ -58,6 +58,31 @@ class _MyAppState extends State<MyApp> {
     await bob.changePassword('${bob.identity}_pkeypassword', '${bob.identity}_pkeypassword_new');
   }
 
+  restorePrivateKeys() async {
+    await alice.restorePrivateKey('${alice.identity}_pkeypassword_new');
+    await bob.restorePrivateKey('${bob.identity}_pkeypassword_new');
+  }
+
+  resetPrivateKeyBackups() async {
+    await alice.resetPrivateKeyBackup();
+    await bob.resetPrivateKeyBackup();
+  }
+
+  rotatePrivateKeys() async {
+    await alice.rotatePrivateKey();
+    await bob.rotatePrivateKey();
+  }
+
+  cleanUp() async {
+    await alice.cleanUp();
+    await bob.cleanUp();
+  }
+
+  unregisterUsers() async {
+    await alice.unregister();
+    await bob.unregister();
+  }
+
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     log = (e) {
@@ -84,10 +109,19 @@ class _MyAppState extends State<MyApp> {
       await backupPrivateKeys();
       log('\n----- EThree.changePassword -----');
       await changePasswords();
+      log('\n----- EThree.cleanUp -----');
+      await cleanUp();
       log('\n----- EThree.restorePrivateKey -----');
-      //await restorePrivateKeys();
+      await restorePrivateKeys();
       log('\n----- EThree.resetPrivateKeyBackup -----');
-      //await resetPrivateKeyBackups();
+      await resetPrivateKeyBackups();
+
+      log('\n* Testing additional methods:');
+
+      log('\n----- EThree.rotatePrivateKey -----');
+      await rotatePrivateKeys();
+      log('\n----- EThree.unregister -----');
+      await unregisterUsers();
     } catch(err) {
       log('Unexpected error: $err');
     }

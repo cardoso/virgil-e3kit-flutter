@@ -23,6 +23,10 @@ extension Error {
             return error.toFlutterError()
         }
 
+        if let error = self as? KeychainStorageError {
+            return error.toFlutterError()
+        }
+
         return FlutterError(
             code: "error",
             message: self.localizedDescription,
@@ -128,6 +132,55 @@ extension CloudKeyStorageError {
         case .entrySavingError:
             return FlutterError(
                 code: "entry_saving_error",
+                message: localizedDescription,
+                details: nil
+            )
+        }
+    }
+}
+
+extension KeychainStorageError {
+    func toFlutterError() -> FlutterError {
+        switch errCode {
+        case .creatingAccessControlFailed:
+            return FlutterError(
+                code: "creating_access_control_failed",
+                message: localizedDescription,
+                details: nil
+            )
+        case .emptyKeychainResponse:
+            return FlutterError(
+                code: "empty_keychain_response",
+                message: localizedDescription,
+                details: nil
+            )
+        case .errorParsingKeychainResponse:
+            return FlutterError(
+                code: "error_parsing_keychain_response",
+                message: localizedDescription,
+                details: nil
+            )
+        case .invalidAppBundle:
+            return FlutterError(
+                code: "invalid_app_bundle",
+                message: localizedDescription,
+                details: nil
+            )
+        case .keychainError:
+            return FlutterError(
+                code: "keychain_error",
+                message: localizedDescription,
+                details: nil
+            )
+        case .utf8ConvertingError:
+            return FlutterError(
+                code: "utf8_converting_error",
+                message: localizedDescription,
+                details: nil
+            )
+        case .wrongResponseType:
+            return FlutterError(
+                code: "wrong_response_type",
                 message: localizedDescription,
                 details: nil
             )

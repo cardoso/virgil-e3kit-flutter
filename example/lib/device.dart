@@ -145,7 +145,7 @@ class Device {
       if (err.code == 'entry_already_exists') {
         await eThree.resetPrivateKeyBackup();
         _log('Reset private key backup. Trying again...');
-        await this.backupPrivateKey(password);
+        await backupPrivateKey(password);
       }
     }
   }
@@ -154,12 +154,87 @@ class Device {
     final eThree = getEThree();
 
     try {
-      //# start of snippet: e3kit_start_of_snippet
+      //# start of snippet: e3kit_change_password
       await eThree.changePassword(oldPassword, newPassword);
-      //# end of snippet: e3kit_end_of_snippet
+      //# end of snippet: e3kit_change_password
       _log('Changed password');
     } on PlatformException catch(err) {
       _log('Failed changing password: $err');
+    }
+  }
+
+  restorePrivateKey(String password) async {
+    final eThree = getEThree();
+
+    try {
+      //# start of snippet: e3kit_restore_private_key
+      await eThree.restorePrivateKey(password);
+      //# end of snippet: e3kit_restore_private_key
+      _log('Restored private key');
+    } on PlatformException catch(err) {
+      _log('Failed restoring private key: $err');
+      if (err.code == 'keychain_error') {
+        await eThree.cleanUp();
+        _log('Cleaned up. Trying again...');
+        await restorePrivateKey(password);
+      }
+    }
+  }
+
+  resetPrivateKeyBackup() async {
+    final eThree = getEThree();
+
+    try {
+      //# start of snippet: e3kit_reset_private_key_backup
+      await eThree.resetPrivateKeyBackup();
+      //# end of snippet: e3kit_reset_private_key_backup
+      _log('Reset private key backup');
+    } on PlatformException catch(err) {
+      _log('Failed resetting private key backup: $err');
+    }
+  }
+
+  rotatePrivateKey() async {
+    final eThree = getEThree();
+
+    try {
+      //# start of snippet: e3kit_rotate_private_key
+      await eThree.rotatePrivateKey();
+      //# end of snippet: e3kit_rotate_private_key
+      _log('Rotated private key');
+    } on PlatformException catch(err) {
+      _log('Failed rotating private key: $err');
+      if (err.code == 'private_key_exists') {
+        await eThree.cleanUp();
+        _log('Cleaned up. Trying again...');
+        await rotatePrivateKey();
+      }
+    }
+  }
+
+  cleanUp() async {
+    final eThree = getEThree();
+
+    try {
+      //# start of snippet: e3kit_cleanup
+      await eThree.cleanUp();
+      //# end of snippet: e3kit_cleanup
+      _log('Cleaned up');
+    } on PlatformException catch(err) {
+      _log('Failed cleaning up: $err');
+    }
+  }
+
+  unregister() async {
+    final eThree = getEThree();
+
+    try {
+      //# start of snippet: e3kit_unregister
+      await eThree.unregister();
+      //# end of snippet: e3kit_unregister
+      _log('Unregistered');
+    } on PlatformException catch(err) {
+      _log('Failed unregistering: $err');
     }
   }
 }
