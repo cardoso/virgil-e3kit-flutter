@@ -96,26 +96,16 @@ final originText = await eThree.decrypt(encryptedText, users[bobUID]);
 
 #### Multidevice support
 
-In order to enable multidevice support you need to backup Private Key. It wil be encrypted with [BrainKey](https://github.com/VirgilSecurity/virgil-pythia-x) generated from password and sent to Virgil Cloud.
+In order to enable multidevice support you need to backup Private Key. It will be encrypted with [BrainKey](https://github.com/VirgilSecurity/virgil-pythia-x) generated from password and sent to Virgil Cloud.
 
-```swift
-ethree.backupPrivateKey(password: userPassword) { error in 
-    guard error == nil else {
-        // Error handling
-    }
-    // Private Key successfully backuped
-}
+```dart
+await eThree.backupPrivateKey(password: userPassword)
 ```
 
-After the private key is backed up you can use `restorePrivateKey` to load and decrypt the Private Key from virgil cloud.
+After the private key is backed up you can use `restorePrivateKey` to load and decrypt the Private Key from Virgil Cloud.
 
 ```swift
-ethree.restorePrivateKey(password: userPassword) { error in 
-    guard error == nil else {
-        // Error handling
-    }
-    // Private Key successfully restored and saved locally
-}
+await eThree.restorePrivateKey(password: userPassword)
 ```
 
 ## Samples
