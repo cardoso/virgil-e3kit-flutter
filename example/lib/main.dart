@@ -125,23 +125,6 @@ class _MyAppState extends State<MyApp> {
     } catch(err) {
       log('Unexpected error: $err');
     }
-
-      /*if (await eThree.hasLocalPrivateKey() == false) {
-        try {
-          await eThree.register();
-        } on Exception {
-          await eThree.rotatePrivateKey();
-        }
-      }
-
-      final encrypted = await eThree.encrypt('hello!');
-      final decrypted = await eThree.decrypt(encrypted);
-      final users = await eThree.findUsers(['Alice']);
-
-      platformVersion = encrypted + ' ' + decrypted + ' ' + users.toString();
-    } on PlatformException catch(e) {
-      platformVersion = 'Failed to get platform version. $e';
-    }*/
   }
 
   @override
