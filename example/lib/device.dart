@@ -3,7 +3,7 @@ import 'package:e3kit/e3kit.dart';
 import 'package:flutter/services.dart';
 
 import 'dart:convert';
-import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'log.dart';
 
@@ -18,10 +18,12 @@ class Device {
   }
 
   initialize() async {
+    final host = Platform.isAndroid ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+
     //# start of snippet: e3kit_authenticate
     final authCallback = () async {
       final response = (await http.post(
-        'http://localhost:3000/authenticate',
+        '$host/authenticate',
         headers: {'Content-Type': 'application/json'},
         body: json.encode({'identity': identity})
       )).body;
@@ -35,7 +37,7 @@ class Device {
       final authToken = await authCallback();
 
       final response = (await http.get(
-        'http://localhost:3000/virgil-jwt',
+        '$host/virgil-jwt',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $authToken'}
