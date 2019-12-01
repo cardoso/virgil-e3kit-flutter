@@ -39,6 +39,14 @@ fun EThreeException.toFlutterError(): FlutterError {
         )
     }
 
+    if(this.message == "Private key already exists in local key storage.") {
+        return FlutterError(
+                "private_key_exists",
+                message,
+                null
+        )
+    }
+
     return this.defaultFlutterError()
 }
 

@@ -1,6 +1,8 @@
 package com.virgilsecurity.e3kit
 
 import android.app.Activity
+import android.os.AsyncTask
+import android.os.Looper
 import com.virgilsecurity.android.common.model.FindUsersResult
 import com.virgilsecurity.android.ethree.interaction.EThree
 import com.virgilsecurity.common.callback.OnCompleteListener
@@ -64,6 +66,21 @@ class FlutterEThree {
                         getOptionalArgument("user"),
                         result
                 )
+                "backupPrivateKey" -> backupPrivateKey(
+                    getArgument("password"),
+                    result
+                )
+                "resetPrivateKeyBackup" -> resetPrivateKeyBackup(result)
+                "changePassword" -> changePassword(
+                    getArgument("oldPassword"),
+                    getArgument("newPassword"),
+                    result
+                )
+                "restorePrivateKey" -> restorePrivateKey(
+                        getArgument("password"),
+                        result
+                )
+                "unregister" -> unregister(result)
                 else -> activity.runOnUiThread {
                     result.error(
                             "method_not_recognized",
@@ -120,10 +137,12 @@ class FlutterEThree {
     }
 
     private fun cleanUp(result: MethodChannel.Result) {
-        instance.cleanup()
+        AsyncTask.execute {
+            instance.cleanup()
 
-        activity.runOnUiThread {
-            result.success(true)
+            activity.runOnUiThread {
+                result.success(true)
+            }
         }
     }
 
@@ -171,5 +190,80 @@ class FlutterEThree {
         val res = instance.decrypt(text, imported)
 
         result.success(res)
+    }
+
+    private fun backupPrivateKey(password: String, result: MethodChannel.Result) {
+        instance.backupPrivateKey(password).addCallback(object: OnCompleteListener {
+            override fun onSuccess() {
+                activity.runOnUiThread {
+                    result.success(true)
+                }
+            }
+            override fun onError(throwable: Throwable) {
+                activity.runOnUiThread {
+                    result.error(throwable.toFlutterError())
+                }
+            }
+        })
+    }
+
+    private fun resetPrivateKeyBackup(result: MethodChannel.Result) {
+        instance.resetPrivateKeyBackup().addCallback(object: OnCompleteListener {
+            override fun onSuccess() {
+                activity.runOnUiThread {
+                    result.success(true)
+                }
+            }
+            override fun onError(throwable: Throwable) {
+                activity.runOnUiThread {
+                    result.error(throwable.toFlutterError())
+                }
+            }
+        })
+    }
+
+    private fun changePassword(oldPassword: String, newPassword: String, result: MethodChannel.Result) {
+        instance.changePassword(oldPassword, newPassword).addCallback(object: OnCompleteListener {
+            override fun onSuccess() {
+                activity.runOnUiThread {
+                    result.success(true)
+                }
+            }
+            override fun onError(throwable: Throwable) {
+                activity.runOnUiThread {
+                    result.error(throwable.toFlutterError())
+                }
+            }
+        })
+    }
+
+    private fun restorePrivateKey(password: String, result: MethodChannel.Result) {
+        instance.restorePrivateKey(password).addCallback(object: OnCompleteListener {
+            override fun onSuccess() {
+                activity.runOnUiThread {
+                    result.success(true)
+                }
+            }
+            override fun onError(throwable: Throwable) {
+                activity.runOnUiThread {
+                    result.error(throwable.toFlutterError())
+                }
+            }
+        })
+    }
+
+    private fun unregister(result: MethodChannel.Result) {
+        instance.unregister().addCallback(object: OnCompleteListener {
+            override fun onSuccess() {
+                activity.runOnUiThread {
+                    result.success(true)
+                }
+            }
+            override fun onError(throwable: Throwable) {
+                activity.runOnUiThread {
+                    result.error(throwable.toFlutterError())
+                }
+            }
+        })
     }
 }
