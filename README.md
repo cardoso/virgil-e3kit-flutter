@@ -88,7 +88,7 @@ import 'package:e3kit/e3kit.dart';
 // TODO: init and register user (see Register User)
 
 // Find user
-final users = await eThree.findUsers(with: [bobUID]);
+final users = await eThree.findUsers([bobUID]);
     
 // Decrypt text and verify if it was really written by Bob
 final originText = await eThree.decrypt(encryptedText, users[bobUID]);
@@ -99,13 +99,13 @@ final originText = await eThree.decrypt(encryptedText, users[bobUID]);
 In order to enable multidevice support you need to backup Private Key. It will be encrypted with [BrainKey](https://github.com/VirgilSecurity/virgil-pythia-x) generated from password and sent to Virgil Cloud.
 
 ```dart
-await eThree.backupPrivateKey(password: userPassword)
+await eThree.backupPrivateKey(userPassword)
 ```
 
 After the private key is backed up you can use `restorePrivateKey` to load and decrypt the Private Key from Virgil Cloud.
 
-```swift
-await eThree.restorePrivateKey(password: userPassword)
+```dart
+await eThree.restorePrivateKey(userPassword)
 ```
 
 ## Samples
