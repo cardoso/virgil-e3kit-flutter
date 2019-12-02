@@ -38,7 +38,9 @@ In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
   ...
-  e3kit: "^0.2.7"
+  e3kit:
+    git:
+      url: git://github.com/cardoso/virgil-e3kit-flutter.git
 ```
 
 In your library add the following import:
