@@ -27,7 +27,7 @@ The E3Kit allows developers to get up and running with Virgil API quickly and ad
 - Easy setup and integration into new or existing projects
 - One-to-one channel with perfect forward secrecy using the Double Ratchet algorithm*
 
-* not available in the Flutter implementation yet.
+\* not available in the Flutter implementation yet.
 
 ## About the Flutter implementation
 
