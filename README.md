@@ -27,8 +27,6 @@ The E3Kit allows developers to get up and running with Virgil API quickly and ad
 
 Virgil E3Kit for Flutter is a wrapper of [E3Kit for Swift/Objective-C](https://github.com/VirgilSecurity/virgil-e3kit-x) and [E3Kit for Android](https://github.com/VirgilSecurity/virgil-e3kit-kotlin) done via [Platform Channels](https://flutter.dev/docs/development/platform-integration/platform-channels). Click the links to see details about the underlying implementations.
 
-iOS minimum deployment target should be >9, or else the dependencies cannot be installed.
-
 ## Installation
 
 In the `pubspec.yaml` of your flutter project, add the following dependency:
@@ -40,6 +38,8 @@ dependencies:
     git:
       url: git://github.com/cardoso/virgil-e3kit-flutter.git
 ```
+
+PS: Flutter seems to create the iOS project with deployment target 8. Change it to 9. After that, you can run `pod install` in the iOS folder.
 
 In your library add the following import:
 
