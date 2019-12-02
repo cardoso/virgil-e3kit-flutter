@@ -43,6 +43,8 @@ dependencies:
       url: git://github.com/cardoso/virgil-e3kit-flutter.git
 ```
 
+PS: iOS minimum deployment target should be >9, or else the dependencies cannot be installed.
+
 In your library add the following import:
 
 ```dart
