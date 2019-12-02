@@ -18,18 +18,22 @@ The E3Kit allows developers to get up and running with Virgil API quickly and ad
 
 - Strong end-to-end encryption with authorization
 - One-to-one and group encryption
-- Files and stream encryption
+- Files and stream encryption*
 - Recovery features for secret keys
 - Strong secret keys storage, integration with Keychain
 - Integration with any CPaaS providers like Nexmo, Firebase, Twilio, PubNub, etc.
-- Public keys cache features
+- Public keys cache features*
 - Access encrypted data from multiple user devices
 - Easy setup and integration into new or existing projects
--  One-to-one channel with perfect forward secrecy using the Double Ratchet algorithm
+- One-to-one channel with perfect forward secrecy using the Double Ratchet algorithm*
+
+* not available in the Flutter implementation yet.
 
 ## About the Flutter implementation
 
 Virgil E3Kit for Flutter is a wrapper of [E3Kit for Swift/Objective-C](https://github.com/VirgilSecurity/virgil-e3kit-x) and [E3Kit for Android](https://github.com/VirgilSecurity/virgil-e3kit-kotlin) done via [Platform Channels](https://flutter.dev/docs/development/platform-integration/platform-channels). Click the links to see details about the underlying implementations.
+
+iOS minimum deployment target should be >9, or else the dependencies cannot be installed.
 
 ## Installation
 
@@ -42,8 +46,6 @@ dependencies:
     git:
       url: git://github.com/cardoso/virgil-e3kit-flutter.git
 ```
-
-PS: iOS minimum deployment target should be >9, or else the dependencies cannot be installed.
 
 In your library add the following import:
 
