@@ -144,7 +144,7 @@ class FlutterEThree {
                 activity.runOnUiThread {
                     result.error(e.toFlutterError())
                 }
-                
+
                 return@execute
             }
 
@@ -194,7 +194,7 @@ class FlutterEThree {
             user: String? = null,
             result: MethodChannel.Result
     ) {
-        val imported = instance.cardManager.importCardAsString(user)
+        val imported = if (user != null) instance.cardManager.importCardAsString(user) else null
         val res = instance.decrypt(text, imported)
 
         result.success(res)
