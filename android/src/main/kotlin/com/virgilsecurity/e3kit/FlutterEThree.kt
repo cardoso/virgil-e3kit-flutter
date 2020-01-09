@@ -138,7 +138,15 @@ class FlutterEThree {
 
     private fun cleanUp(result: MethodChannel.Result) {
         AsyncTask.execute {
-            instance.cleanup()
+            try {
+                instance.cleanup()
+            } catch(e: Throwable) {
+                activity.runOnUiThread {
+                    result.error(e.toFlutterError())
+                }
+                
+                return@execute
+            }
 
             activity.runOnUiThread {
                 result.success(true)
