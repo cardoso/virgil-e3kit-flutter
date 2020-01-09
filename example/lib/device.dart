@@ -100,7 +100,7 @@ class Device {
     }
   }
 
-  encrypt(text, users) async {
+  encrypt(text, [users]) async {
     final eThree = getEThree();
 
     String encryptedText;
