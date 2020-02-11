@@ -15,7 +15,7 @@ A new flutter plugin project.
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-  s.dependency 'VirgilE3Kit', '~> 0.7.0'
+  s.dependency 'VirgilE3Kit', '~> 0.8.0'
 
   s.ios.deployment_target = '9.0'
 end
