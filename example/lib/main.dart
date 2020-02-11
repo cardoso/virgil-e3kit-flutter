@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:e3kit/e3kit.dart';
 
 import 'log.dart';
 import 'device.dart';
@@ -45,6 +46,14 @@ class _MyAppState extends State<MyApp> {
 
     final bobEncryptedText = await bob.encrypt('Hello ${alice.identity}! How are you?', aliceFind);
     await alice.decrypt(bobEncryptedText, bobFind[bob.identity]);
+  }
+
+  groupFlow() async {
+    final aliceGroup = await alice.createGroup('groupalicebob3', bobFind);
+    final encryptedText = await aliceGroup.encrypt('Hello ${bob.identity}! How are you?');
+
+    final bobGroup = await bob.loadGroup('groupalicebob3', aliceFind[alice.identity]);
+    await bobGroup.decrypt(encryptedText, aliceFind[alice.identity]);
   }
 
   backupPrivateKeys() async {
@@ -102,6 +111,9 @@ class _MyAppState extends State<MyApp> {
       await findUsers();
       log('\n----- EThree.encrypt & EThree.decrypt -----');
       await encryptAndDecrypt();
+
+      log('\n* Testing group flow:\n');
+      await groupFlow();
 
       log('\n* Testing private key backup methods:');
 

@@ -3,6 +3,10 @@ import UIKit
 
 import VirgilE3Kit
 
+// TODO: Remove objects when they're destructed in Flutter
+var eThrees: [String: FlutterEThree] = [:]
+var groups: [String: FlutterGroup] = [:]
+
 public class SwiftE3kitPlugin: NSObject, FlutterPlugin {
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "plugins.virgilsecurity.com/e3kit", binaryMessenger: registrar.messenger())
@@ -11,7 +15,6 @@ public class SwiftE3kitPlugin: NSObject, FlutterPlugin {
     }
 
     let channel: FlutterMethodChannel
-    var eThrees: [String: FlutterEThree] = [:]
 
     init(withChannel channel: FlutterMethodChannel) {
         self.channel = channel
@@ -62,15 +65,23 @@ public class SwiftE3kitPlugin: NSObject, FlutterPlugin {
             }
         }
 
-        guard let eThree = eThrees[instanceId] else {
-            result(FlutterError(
-                code: "not_initialized",
-                message: "EThree instance is not initialized",
-                details: nil
-            ))
-            return
+        do {
+            if instanceId.starts(with: "ETHREE:"),
+                let eThree = eThrees[instanceId] {
+                try eThree.invoke(call, result: result)
+            } else if instanceId.starts(with: "GROUP:"),
+                let group = groups[instanceId] {
+                try group.invoke(call, result: result)
+            } else {
+                result(FlutterError(
+                    code: "not_initialized",
+                    message: "Object does not exist",
+                    details: nil
+                ))
+                return
+            }
+        } catch(let error) {
+            result(error)
         }
-
-        try? eThree.invoke(call, result: result)
     }
 }

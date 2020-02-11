@@ -14,26 +14,6 @@ struct FlutterEThree {
     let channel: FlutterMethodChannel
 
     func invoke(_ call: FlutterMethodCall, result: @escaping FlutterResult) throws {
-        func getArgument<T>(_ argument: String, optional: Bool = false) throws -> T {
-            if let arg = (call.arguments as? [String: Any])?[argument] as? T {
-                return arg
-            } else {
-                let error = FlutterError(
-                    code: "argument_not_found",
-                    message: "Could not find argument `\(argument)` of type \(T.self)",
-                    details: nil
-                )
-
-                if !optional { result(error) }
-
-                throw error
-            }
-        }
-
-        func getOptionalArgument<T>(_ argument: String) -> T? {
-            return try? getArgument(argument, optional: true)
-        }
-
         switch call.method {
         case "getIdentity": getIdentity(result)
         case "hasLocalPrivateKey": hasLocalPrivateKey(result)
@@ -41,34 +21,52 @@ struct FlutterEThree {
         case "rotatePrivateKey": rotatePrivateKey(result)
         case "cleanUp": cleanUp(result)
         case "findUsers": findUsers(
-            try getArgument("identities"),
+            try call.getArgument("identities"),
             result
         )
         case "encrypt": encrypt(
-            text: try getArgument("text"),
-            for: getOptionalArgument("users"),
+            text: try call.getArgument("text"),
+            for: call.getOptionalArgument("users"),
             result
         )
         case "decrypt": decrypt(
-            text: try getArgument("text"),
-            from: getOptionalArgument("user"),
+            text: try call.getArgument("text"),
+            from: call.getOptionalArgument("user"),
             result
         )
         case "backupPrivateKey": backupPrivateKey(
-            password: try getArgument("password"),
+            password: try call.getArgument("password"),
             result
         )
         case "resetPrivateKeyBackup": resetPrivateKeyBackup(result)
         case "changePassword": changePassword(
-            from: try getArgument("oldPassword"),
-            to: try getArgument("newPassword"),
+            from: try call.getArgument("oldPassword"),
+            to: try call.getArgument("newPassword"),
             result
         )
         case "restorePrivateKey": restorePrivateKey(
-            password: try getArgument("password"),
+            password: try call.getArgument("password"),
             result
         )
         case "unregister": unregister(result)
+        case "createGroup": createGroup(
+            id: try call.getArgument("groupId"),
+            with: try call.getArgument("users"),
+            result
+        )
+        case "loadGroup": loadGroup(
+            id: try call.getArgument("groupId"),
+            initiator: try call.getArgument("initiator"),
+            result
+        )
+        case "getGroup": getGroup(
+            id: try call.getArgument("groupId"),
+            result
+        )
+        case "deleteGroup": deleteGroup(
+            id: try call.getArgument("groupId"),
+            result
+        )
         default:
             result(FlutterError(
                 code: "method_not_recognized",
@@ -250,6 +248,102 @@ struct FlutterEThree {
                 return result(true)
             case .failure(let error):
                 return result(error.toFlutterError())
+            }
+        }
+    }
+
+    func _registerGroup(
+        _ group: Group,
+        _ result: @escaping FlutterResult
+    ) {
+        let uuid = "GROUP:\(UUID().uuidString)"
+        groups[uuid] = FlutterGroup(
+            origin: instance,
+            instance: group,
+            channel: self.channel
+        )
+        return result(uuid)
+    }
+
+    func _handleGroupResult(
+        _ res: Result<Group, Error>,
+        _ result: @escaping FlutterResult
+    ) {
+        switch res {
+        case .success(let group):
+            _registerGroup(group, result)
+        case .failure(let error):
+            return result(error.toFlutterError())
+        }
+    }
+
+    func createGroup(
+        id: String,
+        with users: [String: String],
+        _ result: @escaping FlutterResult
+    ) {
+        do {
+            let users = try users.mapValues {
+                try instance
+                    .cardManager
+                    .importCard(fromBase64Encoded: $0)
+            }
+
+            instance.createGroup(id: id, with: users).start { res in
+                self._handleGroupResult(res, result)
+            }
+        } catch let error {
+            return result(error.toFlutterError())
+        }
+    }
+
+    func loadGroup(
+        id: String,
+        initiator: String,
+        _ result: @escaping FlutterResult
+    ) {
+        do {
+            let card = try instance
+                .cardManager
+                .importCard(fromBase64Encoded: initiator)
+
+            instance.loadGroup(id: id, initiator: card).start { res in
+                self._handleGroupResult(res, result)
+            }
+        } catch let error {
+            return result(error.toFlutterError())
+        }
+    }
+
+    func getGroup(
+        id: String,
+        _ result: @escaping FlutterResult
+    ) {
+        do {
+            if let group = try instance.getGroup(id: id) {
+                _registerGroup(group, result)
+            } else {
+                result(FlutterError(
+                    code: "group_null",
+                    message: "Group is null",
+                    details: nil
+                ))
+            }
+        } catch let error {
+            return result(error.toFlutterError())
+        }
+    }
+
+    func deleteGroup(
+        id: String,
+        _ result: @escaping FlutterResult
+    ) {
+        instance.deleteGroup(id: id).start { res in
+            switch(res) {
+            case .success:
+                result(true)
+            case .failure(let error):
+                result(error.toFlutterError())
             }
         }
     }

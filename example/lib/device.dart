@@ -126,7 +126,7 @@ class Device {
       //# start of snippet: e3kit_decrypt_and_verify
       decryptedText = await eThree.decrypt(text, user);
       //# end of snippet: e3kit_decrypt_and_verify
-      _log('Decrypted and verified: \'$decryptedText');
+      _log('Decrypted and verified: \'$decryptedText\'');
     } catch(err) {
       _log('Failed decrypting and verifying: $err');
     }
@@ -238,5 +238,92 @@ class Device {
     } on PlatformException catch(err) {
       _log('Failed unregistering: $err');
     }
+  }
+
+  createGroup(String groupId, Map<String, String> users) async {
+    final eThree = getEThree();
+
+    Group group;
+
+    try {
+      //# start of snippet: e3kit_create_group
+      group = await eThree.createGroup(groupId, users);
+      //# end of snippet: e3kit_create_group
+      _log('Created group with \'${users.keys}\': $groupId');
+    } on PlatformException catch(err) {
+        await eThree.deleteGroup(groupId);
+        _log('Deleted group. Trying again...');
+        await createGroup(groupId, users);
+    }
+
+    return group;
+  }
+
+  loadGroup(String groupId, String user) async {
+    final eThree = getEThree();
+
+    Group group;
+
+    try {
+      //# start of snippet: e3kit_load_group
+      group = await eThree.loadGroup(groupId, user);
+      //# end of snippet: e3kit_load_group
+      _log('Loaded group: \'$groupId\'');
+      
+    } on PlatformException catch(err) {
+      _log('Failed loading group \'$groupId\': $err');
+    }
+
+    return group;
+  }
+
+  getGroup(String groupId, String user) async {
+    final eThree = getEThree();
+
+    try {
+      //# start of snippet: e3kit_load_group
+      final group = await eThree.loadGroup(groupId, user);
+      //# end of snippet: e3kit_load_group
+      _log('Got group: \'$groupId\'');
+      return group;
+    } on PlatformException catch(err) {
+      _log('Failed getting group \'$groupId\': $err');
+    }
+  }
+
+  groupEncrypt(String groupId, String text) async {
+    final eThree = getEThree();
+
+    String encryptedText;
+
+    try {
+      final group = await eThree.loadGroup(groupId, text);
+      //# start of snippet: e3kit_group_encrypt
+      encryptedText = await group.encrypt(text);
+      //# end of snippet: e3kit_group_encrypt
+      _log('Encrypted and signed for group \'$groupId\': \'$encryptedText\'.');
+    } on PlatformException catch(err) {
+      _log('Failed encrypting and signing for group \'$groupId\': $err');
+    }
+
+    return encryptedText;
+  }
+
+  groupDecrypt(String groupId, String text, [String user]) async {
+    final eThree = getEThree();
+
+    String decryptedText;
+
+    try {
+      final group = await eThree.loadGroup(groupId, text);
+      //# start of snippet: e3kit_group_decrypt
+      decryptedText = await group.decrypt(text);
+      //# end of snippet: e3kit_group_decrypt
+      _log('Decrypted and verified from group \'$groupId\': \'$decryptedText\'');
+    } on PlatformException catch(err) {
+      _log('Failed decrypting and verifying from group \'$groupId\': $err');
+    }
+
+    return decryptedText;
   }
 }

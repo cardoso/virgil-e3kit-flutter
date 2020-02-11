@@ -7,7 +7,7 @@ final MethodChannel _channel =
       ..setMethodCallHandler(EThree._handleMethodCall);
 
 class EThree {
-  final String _id = _uuid.v4();
+  final String _id = "ETHREE:${_uuid.v4()}";
 
   RenewJwtCallback tokenCallback;
 
@@ -73,6 +73,22 @@ class EThree {
 
   Future<void> unregister() {
     return _invokeMethod('unregister', {});
+  }
+
+  Future<Group> createGroup(String groupId, Map<String, String> users) {
+    return _invokeMethod('createGroup', {'groupId': groupId, 'users': users}).then((res) => Group._(res));
+  }
+
+  Future<Group> loadGroup(String groupId, String initiator) {
+    return _invokeMethod('loadGroup', {'groupId': groupId, 'initiator': initiator}).then((res) => Group._(res));
+  }
+
+  Future<Group> getGroup(String groupId) {
+    return _invokeMethod('getGroup', {'groupId': groupId}).then((res) => Group._(res));
+  }
+
+  Future<void> deleteGroup(String groupId) {
+    return _invokeMethod('deleteGroup', {'groupId': groupId});
   }
 
   Future<T> _invokeMethod<T>(String method, [dynamic arguments]) {

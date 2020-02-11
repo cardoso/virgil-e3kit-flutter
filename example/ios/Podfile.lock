@@ -1,59 +1,73 @@
 PODS:
   - e3kit (0.0.1):
     - Flutter
-    - VirgilE3Kit (~> 0.7.0)
+    - VirgilE3Kit (~> 0.8.0)
   - Flutter (1.0.0)
-  - VirgilCrypto (5.2.0):
-    - VirgilCryptoFoundation (~> 0.11.0)
-  - VirgilCryptoFoundation (0.11.1):
-    - VSCCrypto/Common (= 0.11.0)
-    - VSCCrypto/Foundation (= 0.11.0)
-  - VirgilCryptoPythia (0.11.1):
-    - VirgilCryptoFoundation (= 0.11.1)
-    - VSCCrypto/Common (= 0.11.0)
-    - VSCCrypto/Foundation (= 0.11.0)
-    - VSCCrypto/Pythia (= 0.11.0)
-  - VirgilE3Kit (0.7.0):
-    - VirgilSDKPythia (~> 0.7.0)
-  - VirgilSDK (7.0.2):
-    - VirgilCrypto (~> 5.2)
-  - VirgilSDKPythia (0.7.1):
-    - VirgilCryptoPythia (~> 0.11.0)
-    - VirgilSDK (~> 7.0)
-  - VSCCrypto/Common (0.11.0)
-  - VSCCrypto/Foundation (0.11.0)
-  - VSCCrypto/Pythia (0.11.0)
+  - VirgilCrypto (5.3.0):
+    - VirgilCryptoFoundation (~> 0.12.0)
+  - VirgilCryptoFoundation (0.12.0):
+    - VSCCrypto/Common (= 0.12.0)
+    - VSCCrypto/Foundation (= 0.12.0)
+  - VirgilCryptoPythia (0.12.0):
+    - VirgilCryptoFoundation (= 0.12.0)
+    - VSCCrypto/Common (= 0.12.0)
+    - VSCCrypto/Foundation (= 0.12.0)
+    - VSCCrypto/Pythia (= 0.12.0)
+  - VirgilCryptoRatchet (0.12.0):
+    - VirgilCryptoFoundation (= 0.12.0)
+    - VSCCrypto/Common (= 0.12.0)
+    - VSCCrypto/Foundation (= 0.12.0)
+    - VSCCrypto/Ratchet (= 0.12.0)
+  - VirgilE3Kit (0.8.0):
+    - VirgilSDKPythia (~> 0.8.0)
+    - VirgilSDKRatchet (~> 0.5.0)
+  - VirgilSDK (7.1.0):
+    - VirgilCrypto (~> 5.3)
+  - VirgilSDKPythia (0.8.0):
+    - VirgilCryptoPythia (~> 0.12.0)
+    - VirgilSDK (~> 7.1)
+  - VirgilSDKRatchet (0.5.0):
+    - VirgilCryptoRatchet (~> 0.12.0)
+    - VirgilSDK (~> 7.1)
+  - VSCCrypto/Common (0.12.0)
+  - VSCCrypto/Foundation (0.12.0)
+  - VSCCrypto/Pythia (0.12.0)
+  - VSCCrypto/Ratchet (0.12.0)
 
 DEPENDENCIES:
   - e3kit (from `.symlinks/plugins/e3kit/ios`)
-  - Flutter (from `.symlinks/flutter/ios-release`)
+  - Flutter (from `.symlinks/flutter/ios`)
 
 SPEC REPOS:
   trunk:
     - VirgilCrypto
     - VirgilCryptoFoundation
     - VirgilCryptoPythia
+    - VirgilCryptoRatchet
     - VirgilE3Kit
     - VirgilSDK
     - VirgilSDKPythia
+    - VirgilSDKRatchet
     - VSCCrypto
 
 EXTERNAL SOURCES:
   e3kit:
     :path: ".symlinks/plugins/e3kit/ios"
   Flutter:
-    :path: ".symlinks/flutter/ios-release"
+    :path: ".symlinks/flutter/ios"
 
 SPEC CHECKSUMS:
-  e3kit: 4b929e87e9b486b726270c6d16a980edea2103e3
+  e3kit: 173a440138f41c82a48af413aaeeb14f48114836
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  VirgilCrypto: 309fa760ba0f21f160e7c54c58fca3d33a3913fe
-  VirgilCryptoFoundation: d5678b66b72fe528b8d59469b2787796f8f56c94
-  VirgilCryptoPythia: 260ebee50f05c2ead5c08b84fcd297d058f983e5
-  VirgilE3Kit: f30959b92b6f716a9c7a695067456309b3ce3768
-  VirgilSDK: 5ba4d5347ba91848c43c17e586bd40407aba271b
-  VirgilSDKPythia: 4c9278156e568970e529fec796a684ec48b28788
-  VSCCrypto: 9ffdbed1f9c3fdd4baee7d02aa2baab4ca5d8dd2
+  VirgilCrypto: c2831582c5230eeb2adba2365336c768cd6d8c59
+  VirgilCryptoFoundation: 79f23a7ab6db642268d31bc63b0cf54db416f089
+  VirgilCryptoPythia: 4234b6f84de6fd2448faf6628ecdce84f43650a4
+  VirgilCryptoRatchet: 5aa50ee540cdf1ff7d760fbe410e4f023f52dc18
+  VirgilE3Kit: d220265910317fb02ea17d24cb90c7d55cb46a8d
+  VirgilSDK: 3a94e66f00cd8f89011eee4e445a5e00e9d898f1
+  VirgilSDKPythia: 778eb39b2c73a9d1832b9cad7eaa2cbf1be264cf
+  VirgilSDKRatchet: 9a365d3a434cda39af4e6326eaf25baeed75be68
+  VSCCrypto: e2c8df89e0dc348c2713554f6a2c8864e1cf412d
 
 PODFILE CHECKSUM: b6a0a141693093b304368d08511b46cf3d1d0ac5
 
